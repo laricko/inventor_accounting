@@ -28,7 +28,7 @@ class DefaultModel(models.Model):
         """
         A shortcut method to update model instance from the kwargs.
         """
-        for (key, value) in kwargs.items():
+        for key, value in kwargs.items():
             setattr(self, key, value)
 
     def setattr_and_save(self, key, value):

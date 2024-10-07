@@ -38,8 +38,9 @@ class InventoryItemQuerySet(models.QuerySet):
     def annotate_with_total_stock(self):
         return self.annotate(
             warehouse_total_stock=Coalesce(
-                Sum("warehouse_items__stock", distinct=True), Decimal(0),
-                output_field=models.DecimalField()
+                Sum("warehouse_items__stock", distinct=True),
+                Decimal(0),
+                output_field=models.DecimalField(),
             )
         )
 

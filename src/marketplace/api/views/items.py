@@ -11,6 +11,5 @@ class ListingItemViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return MarketplaceItemsLeftOvers(
-            listing_pk=self.kwargs["listing_pk"],
-            marketplace=self.request.marketplace
+            listing_pk=self.kwargs["listing_pk"], marketplace=self.request.marketplace
         ).fetch_queryset_for_listing_items()

@@ -32,8 +32,12 @@ base_url = "/api/v1/marketplace/listings/"
 @pytest.mark.parametrize(
     "get",
     (
-        (lambda api, l, i: api.get(f"{base_url}{l.id}/items/")["results"][0]),
-        (lambda api, l, i: api.get(f"{base_url}{l.id}/items/{i.id}/")),
+        (
+            lambda api, listings, i: api.get(f"{base_url}{listings.id}/items/")[
+                "results"
+            ][0]
+        ),
+        (lambda api, listings, i: api.get(f"{base_url}{listings.id}/items/{i.id}/")),
     ),
 )
 def test_read_marketplace_item(api, listing, marketplace_item, get):
@@ -111,8 +115,10 @@ def test_marketplace_item_stock_count_different_regions(api, factory, listing):
     factory.warehouse_item(item=item, stock=8, price=1, warehouse=warehouse1)
     factory.warehouse_item(item=item, stock=2, price=10, warehouse=warehouse2)
 
-    got = api.get(f"{base_url}{listing.id}/items/{marketplace_item_object.id}/", expected_status_code=200)
+    got = api.get(
+        f"{base_url}{listing.id}/items/{marketplace_item_object.id}/",
+        expected_status_code=200,
+    )
     assert got["total_stock"] == "8.00"
     assert got["min_price"] == "1.00"
     assert got["max_price"] == "1.00"
-

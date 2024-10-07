@@ -6,8 +6,8 @@ pytestmark = [pytest.mark.django_db]
 @pytest.mark.parametrize(
     "get",
     (
-        (lambda api, l: api.get("/api/v1/marketplace/listings/")["results"][0]),
-        (lambda api, l: api.get(f"/api/v1/marketplace/listings/{l.id}/")),
+        (lambda api, listings: api.get("/api/v1/marketplace/listings/")["results"][0]),
+        (lambda api, listings: api.get(f"/api/v1/marketplace/listings/{listings.id}/")),
     ),
 )
 def test_read_listing(api, listing, get):

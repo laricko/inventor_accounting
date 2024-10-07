@@ -1,4 +1,3 @@
-
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
 
@@ -21,18 +20,16 @@ class MarketplaceItemsLeftOvers:
             listings__id=listing.pk,
         ).distinct()
         queryset = (
-            queryset
-            .select_related("product")
+            queryset.select_related("product")
             .prefetch_related(
-                "product__inventory_items",
-                "product__inventory_items__warehouse_items"
+                "product__inventory_items", "product__inventory_items__warehouse_items"
             )
             .annotate_product_total_stock(region=region)
             .annotate_product_min_price(region=region)
             .annotate_product_max_price(region=region)
         )
         queryset = queryset.order_by("id")
-        
+
         result = queryset
         cache.set(cache_key, result, 600)
         return result
