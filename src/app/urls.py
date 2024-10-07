@@ -36,7 +36,7 @@ router_v1.register("marketplace/marketplaces", MarketplaceViewSet)
 listing_router = NestedDefaultRouter(
     router_v1, "marketplace/listings", lookup="listing"
 )
-listing_router.register(r"items", ListingItemViewSet)
+listing_router.register(r"items", ListingItemViewSet, "listing_item")
 
 # Views:
 

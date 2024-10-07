@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.apps import apps
 from django.conf import settings
 from django.db.models import Sum
@@ -36,7 +38,7 @@ class InventoryItemQuerySet(models.QuerySet):
     def annotate_with_total_stock(self):
         return self.annotate(
             warehouse_total_stock=Coalesce(
-                Sum("warehouse_items__stock", distinct=True), 0,
+                Sum("warehouse_items__stock", distinct=True), Decimal(0),
                 output_field=models.DecimalField()
             )
         )

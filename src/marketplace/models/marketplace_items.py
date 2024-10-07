@@ -1,9 +1,51 @@
+from decimal import Decimal
+
+from django.db.models import Max, Min, Sum
+from django.db.models.functions import Coalesce
 from django.utils.translation import gettext_lazy as _
 
 from app.models import TimestampedModel, models
 
 
+class MarketplaceItemQuerySet(models.QuerySet):
+
+    def annotate_product_total_stock(self, region):
+        return self.annotate(
+            total_stock=Coalesce(
+                Sum(
+                    "product__inventory_items__warehouse_items__stock",
+                    filter=models.Q(product__inventory_items__warehouse_items__warehouse__region=region),
+                ),
+                Decimal(0)
+            )
+        )
+
+    def annotate_product_max_price(self, region):
+        return self.annotate(
+            max_price=Coalesce(
+                Max(
+                    "product__inventory_items__warehouse_items__price",
+                    filter=models.Q(product__inventory_items__warehouse_items__warehouse__region=region),
+                ),
+                Decimal(0)
+            )
+        )
+
+    def annotate_product_min_price(self, region):
+        return self.annotate(
+            min_price=Coalesce(
+                Min(
+                    "product__inventory_items__warehouse_items__price",
+                    filter=models.Q(product__inventory_items__warehouse_items__warehouse__region=region),
+                ),
+                Decimal(0)
+            )
+        )
+
+
 class MarketplaceItem(TimestampedModel):
+    objects = MarketplaceItemQuerySet.as_manager()
+
     STATUS_CHOICES = (
         ("pending_confirmation", _("Pending confirmation")),
         ("confirmed", _("Confirmed")),

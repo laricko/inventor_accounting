@@ -6,6 +6,7 @@ from mixer.backend.django import mixer
 if TYPE_CHECKING:
     from inventory.models import InventoryItem, InventoryOwner, Product
     from marketplace.models import Listing, Marketplace, MarketplaceItem
+    from regions.models import Region
     from warehouse.models import Warehouse, WarehouseItem
 
 
@@ -65,8 +66,9 @@ class Factory:
     @classmethod
     def warehouse(cls, **kwargs) -> "Warehouse":
         name = kwargs.pop("name", None) or cls.faker.word()
+        region = kwargs.pop("region", None) or cls.region()
         owner = kwargs.pop("owner", None) or cls.owner()
-        return mixer.blend("warehouse.Warehouse", owner=owner, name=name, **kwargs)
+        return mixer.blend("warehouse.Warehouse", owner=owner, name=name, region=region, **kwargs)
 
     @classmethod
     def owner(cls, **kwargs) -> "InventoryOwner":
@@ -93,3 +95,10 @@ class Factory:
         item.listings.add(listing)
 
         return item
+
+    @classmethod
+    def region(cls, **kwargs) -> "Region":
+        name = kwargs.pop("name", None) or cls.faker.word()
+        return mixer.blend(
+            "regions.Region", name=name, **kwargs
+        )
