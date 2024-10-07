@@ -10,12 +10,20 @@ pytestmark = [
 def marketplace_item(factory, listing):
     item = factory.item()
 
-    return factory.marketplace_item(
+    marketplace_item_object = factory.marketplace_item(
         listing=listing,
         product=item.product,
         status="confirmed",
         status_comment="Hello darkness my old friend",
     )
+
+    warehouse1 = factory.warehouse(region=listing.region)
+    warehouse2 = factory.warehouse(region=listing.region)
+
+    factory.warehouse_item(item=item, stock=8, price=1, warehouse=warehouse1)
+    factory.warehouse_item(item=item, stock=2, price=10, warehouse=warehouse2)
+
+    return marketplace_item_object
 
 
 base_url = "/api/v1/marketplace/listings/"
@@ -35,6 +43,9 @@ def test_read_marketplace_item(api, listing, marketplace_item, get):
     assert got["gmid"] == str(marketplace_item.product.id)
     assert got["status"] == "confirmed"
     assert got["status_comment"] == "Hello darkness my old friend"
+    assert got["total_stock"] == "10.00"
+    assert got["min_price"] == "1.00"
+    assert got["max_price"] == "10.00"
 
 
 def test_read_marketplace_item_only_for_current_listing(
@@ -80,3 +91,28 @@ def test_marketplace_can_not_get_not_own_listing_items(api, marketplace, factory
     another_listing = factory.listing()
 
     api.get(f"{base_url}{another_listing.id}/items/", expected_status_code=404)
+
+
+def test_marketplace_item_stock_count_different_regions(api, factory, listing):
+    item = factory.item()
+
+    marketplace_item_object = factory.marketplace_item(
+        listing=listing,
+        product=item.product,
+        status="confirmed",
+        status_comment="Hello darkness my old friend",
+    )
+
+    another_region = factory.region()
+
+    warehouse1 = factory.warehouse(region=listing.region)
+    warehouse2 = factory.warehouse(region=another_region)
+
+    factory.warehouse_item(item=item, stock=8, price=1, warehouse=warehouse1)
+    factory.warehouse_item(item=item, stock=2, price=10, warehouse=warehouse2)
+
+    got = api.get(f"{base_url}{listing.id}/items/{marketplace_item_object.id}/", expected_status_code=200)
+    assert got["total_stock"] == "8.00"
+    assert got["min_price"] == "1.00"
+    assert got["max_price"] == "1.00"
+

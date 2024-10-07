@@ -4,7 +4,7 @@ class SimpleMiddleware:
 
 
 def _marketplace(self):
-    if not self.user.is_anonymous:
+    if self.user.is_authenticated:
         return self.user.marketplace_set.first()
 
 

@@ -53,7 +53,12 @@ DATABASES = {
 }
 
 CACHES = {
-    "default": env.cache(),
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": [
+            "redis://0.0.0.0:6379/1"
+        ],
+    }
 }
 
 # Application definition

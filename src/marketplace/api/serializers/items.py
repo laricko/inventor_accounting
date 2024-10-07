@@ -8,6 +8,9 @@ from .products import MarketplaceProductSerializer
 class SimpleListingItemSerializer(serializers.ModelSerializer):
     gmid = serializers.CharField(source="product_id")
     product = MarketplaceProductSerializer()
+    total_stock = serializers.DecimalField(max_digits=12, decimal_places=2)
+    min_price = serializers.DecimalField(max_digits=12, decimal_places=2)
+    max_price = serializers.DecimalField(max_digits=12, decimal_places=2)
 
     class Meta:
         model = MarketplaceItem
@@ -17,4 +20,7 @@ class SimpleListingItemSerializer(serializers.ModelSerializer):
             "status",
             "status_comment",
             "product",
+            "total_stock",
+            "min_price",
+            "max_price",
         ]
