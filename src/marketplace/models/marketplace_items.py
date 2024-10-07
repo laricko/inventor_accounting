@@ -14,9 +14,11 @@ class MarketplaceItemQuerySet(models.QuerySet):
             total_stock=Coalesce(
                 Sum(
                     "product__inventory_items__warehouse_items__stock",
-                    filter=models.Q(product__inventory_items__warehouse_items__warehouse__region=region),
+                    filter=models.Q(
+                        product__inventory_items__warehouse_items__warehouse__region=region
+                    ),
                 ),
-                Decimal(0)
+                Decimal(0),
             )
         )
 
@@ -25,9 +27,11 @@ class MarketplaceItemQuerySet(models.QuerySet):
             max_price=Coalesce(
                 Max(
                     "product__inventory_items__warehouse_items__price",
-                    filter=models.Q(product__inventory_items__warehouse_items__warehouse__region=region),
+                    filter=models.Q(
+                        product__inventory_items__warehouse_items__warehouse__region=region
+                    ),
                 ),
-                Decimal(0)
+                Decimal(0),
             )
         )
 
@@ -36,9 +40,11 @@ class MarketplaceItemQuerySet(models.QuerySet):
             min_price=Coalesce(
                 Min(
                     "product__inventory_items__warehouse_items__price",
-                    filter=models.Q(product__inventory_items__warehouse_items__warehouse__region=region),
+                    filter=models.Q(
+                        product__inventory_items__warehouse_items__warehouse__region=region
+                    ),
                 ),
-                Decimal(0)
+                Decimal(0),
             )
         )
 

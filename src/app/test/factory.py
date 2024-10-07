@@ -68,7 +68,9 @@ class Factory:
         name = kwargs.pop("name", None) or cls.faker.word()
         region = kwargs.pop("region", None) or cls.region()
         owner = kwargs.pop("owner", None) or cls.owner()
-        return mixer.blend("warehouse.Warehouse", owner=owner, name=name, region=region, **kwargs)
+        return mixer.blend(
+            "warehouse.Warehouse", owner=owner, name=name, region=region, **kwargs
+        )
 
     @classmethod
     def owner(cls, **kwargs) -> "InventoryOwner":
@@ -99,6 +101,4 @@ class Factory:
     @classmethod
     def region(cls, **kwargs) -> "Region":
         name = kwargs.pop("name", None) or cls.faker.word()
-        return mixer.blend(
-            "regions.Region", name=name, **kwargs
-        )
+        return mixer.blend("regions.Region", name=name, **kwargs)
